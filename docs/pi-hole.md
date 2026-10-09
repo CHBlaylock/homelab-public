@@ -26,3 +26,16 @@ The Pi runs Pi-hole for network-wide DNS filtering. The private deployment also 
 ## Privacy
 
 This document intentionally excludes real hostnames, local and remote IP addresses, tailnet identifiers, authentication information, device serial numbers, and detailed routing settings.
+
+## Centralized DNS for LAN and Tailscale
+
+The Raspberry Pi 3 B+ is **wired to the home router over Ethernet** and runs Pi-hole as the central DNS filtering service.
+
+- **Home network:** The router advertises Pi-hole as a DNS server through DHCP. Devices using the router-provided DNS settings automatically send their DNS queries to Pi-hole without manual setup on each device.
+- **Remote devices:** Tailscale is configured to make the Pi-hole DNS service available to connected devices outside the home, providing consistent DNS filtering over the private tailnet.
+- **Division of responsibilities:** The router provides DHCP, routing, firewall, and Wi-Fi; the Raspberry Pi provides DNS filtering.
+
+This is **centralized DNS configuration**, not forced interception of all DNS traffic. Devices or applications using custom DNS, encrypted DNS, or alternative resolvers may bypass filtering. Verification involves checking DNS settings and Pi-hole query logs for both LAN and Tailscale clients.
+
+No actual IP addresses, hostnames, tailnet identifiers, or private network configuration values are included in this public description.
+
