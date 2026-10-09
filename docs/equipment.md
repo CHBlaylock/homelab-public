@@ -29,7 +29,7 @@ The **digital photo frame is integrated into the Pi-cloud case** using its built
 
 | Equipment | Status / intended role |
 | --- | --- |
-| Dell OptiPlex 7060 SFF | Donated; future main home server |
+| Dell OptiPlex 7060 SFF | Donated/acquired, not yet booted or inspected; reported Intel Core i7-8700, 24 GB RAM, 512 GB storage (NVMe versus SATA SSD unverified), Windows reportedly installed; Proxmox VE recommended but not installed. Planned NAS/Jellyfin/backup host and standby Pi-hole VM |
 | Second independent Raspberry Pi 5 cloud | Planned, not yet acquired |
 | 2.5-inch SSD NAS | Planned household storage and secondary backup target |
 | HDD NAS | Planned additional weekly backup target |
