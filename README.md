@@ -81,3 +81,12 @@ A second independent Pi-cloud appliance is also planned using the same general a
 - [Pi-hole appliance](docs/pi-hole.md)
 
 This repository is intentionally sanitized for public viewing while preserving the technical architecture, troubleshooting lessons, and skills demonstrated by the project.
+
+## Future DNS resilience
+
+**Planned, not implemented.** The network currently uses a dedicated wired Raspberry Pi Pi-hole appliance for DNS filtering, with a public DNS fallback available to clients. A secondary DHCP DNS entry is not strict failover: clients may use either resolver while both are available.
+
+The roadmap includes a **second dedicated Pi-hole device** and evaluation of health-checked DNS failover, with the goal of keeping LAN and Tailscale clients on filtered DNS during a primary appliance outage. A DNS proxy or virtual IP may be needed if strict primary/standby behavior is required. Planned validation includes simulated outage, continued DNS resolution and filtering, and recovery/failback tests. Client-selected DNS and encrypted DNS bypasses are separate policy considerations.
+
+No private network addresses or device identifiers are disclosed.
+
