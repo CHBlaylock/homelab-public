@@ -39,3 +39,7 @@ This is **centralized DNS configuration**, not forced interception of all DNS tr
 
 No actual IP addresses, hostnames, tailnet identifiers, or private network configuration values are included in this public description.
 
+
+## Planned DNS failover (not deployed)
+
+Evaluate a backup Pi-hole Debian VM on a donated OptiPlex virtualization host running future Proxmox VE. A separate monitor would check primary DNS health and start the normally stopped backup VM upon failure. Starting the VM alone does not redirect clients: a safe DNS handoff/virtual IP, split-brain protection, recovery behavior, synchronized filtering, and LAN/private VPN DNS access must be validated. Existing DNS settings have not changed.
