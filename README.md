@@ -77,6 +77,7 @@ A second independent Pi-cloud appliance is also planned using the same general a
 - Tailscale
 - Issues and fixes
 - Maintenance
-- Equipment
+- [Equipment inventory — exact Raspberry Pi 3 B+ and Raspberry Pi 5 build components](docs/equipment.md)
+- [Pi-hole appliance](docs/pi-hole.md)
 
 This repository is intentionally sanitized for public viewing while preserving the technical architecture, troubleshooting lessons, and skills demonstrated by the project.
