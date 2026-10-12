@@ -1,21 +1,42 @@
-# Tailscale
+# Tailscale remote access
 
-Tailscale provides private remote access to homelab services.
+## Architecture
 
-## Design
+The homelab uses Tailscale for private administration and self-hosted service access without exposing management ports through the household router.
 
-- Local clients use the LAN.
-- Remote clients use Tailscale.
-- Public Internet port forwarding is not required for the intended access model.
+- A dedicated Raspberry Pi hosts DNS filtering and participates in Tailscale.
+- A separate Raspberry Pi personal-cloud node uses Tailscale for remote application access.
+- The Dell OptiPlex Proxmox hypervisor was added to the existing tailnet in October 2026.
+- The hypervisor was **not** configured as an exit node or subnet router.
+- The isolated training VM bridge has no physical uplink or default gateway; connecting the hypervisor to Tailscale did not give the isolated VM internet connectivity.
 
-## Troubleshooting lesson
+## Proxmox host deployment
 
-A client that was permanently located at home had a routing conflict caused by accepting a Tailscale subnet route for the same LAN it was already connected to directly.
+On the Debian-based hypervisor:
 
-The client was configured with:
-
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+tailscale up --accept-dns=false
+tailscale status
+systemctl is-enabled tailscaled
 ```
+
+The `--accept-dns=false` setting preserves the host's existing DNS configuration. The host joined the existing tailnet, and the service was verified enabled at boot.
+
+**Validation:** A mobile phone with Wi-Fi disabled successfully loaded the Proxmox management interface over cellular data using its Tailscale address and the Proxmox HTTPS management port. This tests a genuinely off-LAN path rather than relying on two devices already on the same local network.
+
+An informational status message indicated that other peers advertised routes while this host was configured not to accept them. That is appropriate for a host already directly attached to the home LAN.
+
+## Routing troubleshooting
+
+A home-based Windows client previously experienced a routing conflict from accepting an advertised subnet route to the same LAN it was physically connected to. The client-side fix was:
+
+```bash
 tailscale set --accept-routes=false
 ```
 
-Actual addresses and tailnet identifiers are intentionally omitted.
+## Security
+
+No router port forwarding was needed. Tailnet ACLs/grants and host authentication remain important controls. Tailscale does not replace Proxmox authentication, and its presence on the hypervisor does not automatically expose or route isolated guest networks.
+
+Actual addresses, hostnames, tailnet identities, device identifiers, and authentication material are intentionally omitted.
