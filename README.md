@@ -42,9 +42,9 @@ The hypervisor runs an **isolated Ubuntu Server 24.04.3 LTS training VM** on a L
 
 **Remote administration is working:** Tailscale was installed directly on the hypervisor with DNS acceptance disabled. A phone on cellular data successfully accessed the Proxmox management interface through the tailnet; the Tailscale service was verified enabled at boot. No router port forwarding was required.
 
-**Future work, not yet deployed:** additional SATA SSD storage, 2.5 GbE expansion, household NAS workloads, Jellyfin, off-host SSD-NAS backups, weekly HDD-NAS backup tier, and standby DNS infrastructure. Physical inspection found three conventional SATA ports, a removable optical drive, and a 200 W OEM power supply. Drive-power and chassis-fit validation remain pending.
+**Future work, not yet deployed:** additional SATA SSD storage, 2.5 GbE expansion, dedicated four-bay TrueNAS SSD NAS, Jellyfin, off-host backups, weekly HDD-NAS backup tier, and standby DNS infrastructure. Physical inspection found three conventional SATA ports, a removable optical drive, and a 200 W OEM power supply. Drive-power and chassis-fit validation remain pending.
 
-A second independent Pi-cloud appliance is also planned.
+A second independent Pi-cloud appliance is also planned. The selected (not purchased) NAS design uses a Yxk Zero1 Pro with two 2 TB TEAMGROUP Vulcan Z SATA SSDs in a ZFS mirror, a planned internal eMMC TrueNAS boot, and a later expansion path to four 4 TB SSDs. Estimated initial hardware cost is $796.98 before tax and contingencies. See [NAS design](docs/nas-storage.md).
 
 See [Proxmox/Ubuntu deployment](docs/proxmox-ubuntu-lab.md), [remote access](docs/tailscale.md), and [OptiPlex expansion assessment](docs/optiplex-storage-expansion.md).
 
