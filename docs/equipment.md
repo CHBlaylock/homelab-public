@@ -29,14 +29,14 @@ The **digital photo frame is integrated into the Pi-cloud case** using its built
 
 | Equipment | Status / intended role |
 | --- | --- |
-| Dell OptiPlex 7060 SFF | Donated/acquired, not yet booted or inspected; reported Intel Core i7-8700, 24 GB RAM, 512 GB storage (NVMe versus SATA SSD unverified), Windows reportedly installed; Proxmox VE recommended but not installed. Planned NAS/Jellyfin/backup host and standby Pi-hole VM |
+| Dell OptiPlex 7060 SFF | Donated/acquired and deployed as Proxmox VE 9.2.2 host; verified Intel Core i7-8700, 24 GB RAM, 512 GB NVMe, 200 W OEM PSU, three conventional SATA data ports; isolated Ubuntu training VM and Tailscale remote management verified. Additional SSDs, NAS/Jellyfin and standby DNS remain planned |
 | Second independent Raspberry Pi 5 cloud | Planned, not yet acquired |
 | 2.5-inch SSD NAS | Planned household storage and secondary backup target |
 | HDD NAS | Planned additional weekly backup target |
-| Managed switch / compact rack infrastructure | Under evaluation; not yet selected |
+| 2.5 GbE switch / compact rack infrastructure | Under evaluation; custom rack maximum internal width 10 inches; not yet selected |
 
 ## Scope and privacy
 
 The listed specifications are based on the recorded purchased-product descriptions, not independent verification of every manufacturer's marketing claim. The public inventory intentionally excludes purchase receipts, order numbers, serial numbers, private topology, device addresses, and other identifying details.
 
-See the project documentation for Linux, Docker, Immich, Nextcloud, Pi-hole, Tailscale, and photo-frame implementation.
+See [OptiPlex expansion assessment](optiplex-storage-expansion.md), [Proxmox/Ubuntu lab](proxmox-ubuntu-lab.md) and [Tailscale](tailscale.md) for verified work and future plans.
