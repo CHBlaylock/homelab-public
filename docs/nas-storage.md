@@ -2,6 +2,22 @@
 
 **Status: design selected; equipment not yet ordered, installed, or tested (October 2026).**
 
+## Selection rationale
+
+| Decision | Why this instead of the alternative |
+| --- | --- |
+| Yxk Zero1 Pro rather than a Pi NAS, CWWK DIY build, or two-bay unit | Four SATA bays, an x86 TrueNAS-compatible design and dual 2.5 GbE provide room to expand without buying a more expensive enclosure. |
+| TrueNAS rather than proprietary NAS software or OMV | Integrated ZFS snapshots, checksums and replication suit the intended storage/backup system. |
+| TEAMGROUP Vulcan Z rather than TEAMGROUP QX or Ediloca | Advertised TLC and a more established brand justify a modest premium; verify actual NAND and SKU before ordering. |
+| Two 2 TB drives rather than two 4 TB drives initially | Keeps initial expenditure manageable while preserving a later upgrade path. |
+| ZFS mirror rather than RAID0 or a stripe | Keeps the pool accessible after one drive failure, though it still needs separate backups. |
+| Internal eMMC boot rather than buying a small NVMe immediately | Saves a boot-drive purchase and keeps both M.2 slots free, contingent on successful testing on the exact unit. |
+| Upgrade to 4 TB drives one at a time rather than rebuild storage | Can expand the mirror after safe resilvers and allows the original 2 TB drives to be reused. |
+| Add another 4 TB mirror rather than replace the NAS | Defers costs and uses the two empty SATA bays to grow the pool. |
+| Later HDD NAS rather than only local snapshots | Adds a physically distinct backup copy to protect against more than a single drive failure. |
+
+See the [homelab decision log](decisions.md) for broader architectural choices.
+
 ## Purpose and architecture
 
 A physically separate SSD NAS will provide shared household storage and versioned, off-host backups of the existing Raspberry Pi personal cloud and relevant Proxmox workloads. The Pi's current NVMe remains primary for Nextcloud and Immich; Proxmox remains the compute host (including planned Jellyfin). The NAS is **not** an additional Pi or a Proxmox VM.
