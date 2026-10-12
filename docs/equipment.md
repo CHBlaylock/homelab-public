@@ -31,11 +31,11 @@ The **digital photo frame is integrated into the Pi-cloud case** using its built
 | --- | --- |
 | Dell OptiPlex 7060 SFF | Donated/acquired and deployed as Proxmox VE 9.2.2 host; verified Intel Core i7-8700, 24 GB RAM, 512 GB NVMe, 200 W OEM PSU, three conventional SATA data ports; isolated Ubuntu training VM and Tailscale remote management verified. Additional SSDs, NAS/Jellyfin and standby DNS remain planned |
 | Second independent Raspberry Pi 5 cloud | Planned, not yet acquired |
-| 2.5-inch SSD NAS | Planned household storage and secondary backup target |
-| HDD NAS | Planned additional weekly backup target |
+| Yxk Zero1 Pro four-bay SSD NAS | Selected, not purchased: Intel N100, dual 2.5 GbE, intended TrueNAS boot from reported internal 64 GB eMMC; physical and boot verification pending |
+| 2 × TEAMGROUP T-Force Vulcan Z 2 TB SATA SSDs | Selected, not purchased: advertised TLC, planned ZFS mirror (~2 TB nominal usable), $477.98 pair at user-observed price; exact revision to verify |\n| HDD NAS | Planned additional weekly backup target |
 | 2.5 GbE switch / compact rack infrastructure | Under evaluation; custom rack maximum internal width 10 inches; not yet selected |
 
-## Scope and privacy
+The planned NAS enclosure is $319, bringing the estimated initial hardware total to **$796.98**, excluding tax and contingencies. The upgrade plan replaces the two 2 TB mirror members individually with 4 TB drives, then adds another 4 TB mirror; see [NAS design](nas-storage.md).\n\n## Scope and privacy
 
 The listed specifications are based on the recorded purchased-product descriptions, not independent verification of every manufacturer's marketing claim. The public inventory intentionally excludes purchase receipts, order numbers, serial numbers, private topology, device addresses, and other identifying details.
 
