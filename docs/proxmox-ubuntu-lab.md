@@ -51,3 +51,9 @@ The guest was installed without internet access. Its Netplan configuration was c
 The guest agent and Ubuntu updates remain pending because the lab is deliberately offline. Future work includes a virtual firewall with explicit network segmentation rules, package updates, guest-agent integration, Linux administration exercises, and off-host backup storage. A VM snapshot provides rollback, **not disaster recovery** against physical SSD failure.
 
 **Skills demonstrated:** bare-metal deployment, UEFI/BIOS troubleshooting, virtualization, Linux bridges, network isolation, package repositories, systemd diagnostics, Netplan, LVM, SSH, snapshots, and technical documentation.
+
+## Tailscale remote administration — implemented October 2026
+
+Tailscale was installed directly on the hypervisor, authenticated into the existing tailnet, and started with `--accept-dns=false` to preserve local resolver configuration. The management interface was successfully loaded from a phone using cellular data with Wi-Fi disabled, verifying remote connectivity beyond the home LAN. The Tailscale service was confirmed enabled at boot. No router port forwarding or guest-network routing was added.
+
+See [Tailscale deployment](tailscale.md) and [hardware/storage expansion assessment](optiplex-storage-expansion.md). Internal network and device identifiers are intentionally omitted.
