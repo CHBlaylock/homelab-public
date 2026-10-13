@@ -101,3 +101,5 @@ No private network addresses or device identifiers are disclosed.
 ## Mealie recipe manager
 
 Mealie runs in a dedicated Debian VM on Proxmox with Docker Compose. Household LAN and Tailscale remote access are verified. Daily VM and application backups are configured; a manual application archive and off-host SSH/rsync transfer to the Pi 5 NVMe have been verified. The sequential nightly job and disaster-recovery restore still need end-to-end testing. See [Mealie deployment and backup runbook](docs/mealie.md).
+
+**Backup retention update (October 2026):** Pi off-host Mealie archive transfer now includes a manually tested, post-success 30-day age-based cleanup restricted to Mealie archive filenames. Aged-file deletion, scheduled execution, and disaster-recovery restore remain to be validated.
