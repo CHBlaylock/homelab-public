@@ -16,7 +16,7 @@ A dedicated Debian VM on a Proxmox VE hypervisor runs Mealie in Docker Compose. 
 | Nightly orchestration | Cron starts application backup at 3 AM server local time, then invokes off-host transfer only after backup command succeeds | Configured; manual end-to-end run passed; scheduled cron execution and restore test pending |
 | Disaster recovery | Restore archive into a clean disposable VM and validate recipes/accounts | Not yet tested |
 
-The two backup destinations provide different hardware failure domains, but neither substitutes for a tested restore or a later dedicated backup NAS. Remote archives currently accumulate; separate retention management is future work.
+The two backup destinations provide different hardware failure domains, but neither substitutes for a tested restore or a later dedicated backup NAS. Pi archives older than 30 days are now pruned after successful transfer; this cleanup was manually tested.
 
 ## Engineering decisions
 
@@ -34,3 +34,7 @@ Manual nightly workflow passed on October 13, 2026: matching named 65 KB archive
 ## October 13, 2026 manual end-to-end test
 
 Executed the nightly orchestration script manually. Confirmed matching new archive `mealie-2026-10-13_02-36-29.tar.gz` (65 KB displayed) in both local and Pi backup directories; prior `02-12-18` archive remained on both. Docker reported the Mealie container `Up (healthy)` after restart. **This verifies the manual workflow, not yet the cron-triggered run, checksum equality, archive extraction, or a full restore.**
+
+## October 13, 2026 — Pi retention configured
+
+Updated `/usr/local/sbin/sync-mealie-to-pi.sh` to perform a remote `find` restricted to `/mnt/nvme/backups/mealie`, matching `mealie-*.tar.gz`, `-mtime +29`, and `-delete`, **only after rsync succeeds**. Syntax check and manual transfer/retention invocation were confirmed successful. A read-only precheck found no files old enough to delete; actual deletion of aged files has not yet been observed. Future scheduled run and isolated restore test remain pending.
