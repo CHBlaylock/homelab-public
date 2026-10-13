@@ -38,3 +38,17 @@ Executed the nightly orchestration script manually. Confirmed matching new archi
 ## October 13, 2026 — Pi retention configured
 
 Updated `/usr/local/sbin/sync-mealie-to-pi.sh` to perform a remote `find` restricted to `/mnt/nvme/backups/mealie`, matching `mealie-*.tar.gz`, `-mtime +29`, and `-delete`, **only after rsync succeeds**. Syntax check and manual transfer/retention invocation were confirmed successful. A read-only precheck found no files old enough to delete; actual deletion of aged files has not yet been observed. Future scheduled run and isolated restore test remain pending.
+
+## October 13, 2026 — scheduled backup and recovery verification
+
+The scheduled 3:00 AM cron run was confirmed in the application backup log. Archive `mealie-2026-10-13_03-00-01.tar.gz` was created, the Mealie container restarted, the Pi rsync transfer completed, and the workflow logged completion at 3:00:03 AM CDT. Earlier manual archives on VM and Pi had matching SHA-256 digests and passed archive-read checks. The remote 30-day pruning command ran, but deletion of an aged file has not been observed.
+
+A Proxmox backup of VM 101 taken at 01:44:44 was restored to temporary isolated VM 102 with its network device disconnected to prevent IP conflicts. The restored Debian system booted, Docker and Mealie were healthy, and SQLite `PRAGMA integrity_check` returned `ok`. User/recipe tables and count queries were inspected. **This verifies VM-image recovery, not a restore from the Pi application archive.** VM 102 was retained temporarily for cleanup; do not reconnect it to the LAN while the original VM is active.
+
+## October 13, 2026 — Uptime Kuma monitoring
+
+Dedicated unprivileged Debian LXC with native Node.js and Uptime Kuma under systemd. Service startup after container reboot and private Tailscale access from cellular were verified; no public port forwarding. Internal addresses and account names are omitted.
+
+Mealie HTTP availability monitor checks the application once per minute. The nightly backup Push monitor expects a report within 93,600 seconds (26 hours). The orchestration script reports UP via curl only after the application backup and Pi rsync both succeed. Its Bash ERR trap attempts to report DOWN if the orchestration fails. The Push URL is stored in a root-readable-only config file separate from the script; no token or credential is committed.
+
+A standalone simulated DOWN push changed the monitor status and triggered a successful Gmail SMTP email notification to an iPhone; a subsequent UP push restored the monitor. Bash syntax validation passed. **Not yet verified:** an intentionally failed real backup/transfer triggering the ERR trap, the next scheduled run sending its own push, actual aged-file deletion, and full restore of an application archive. The manual UP push is a connectivity test, not evidence that a scheduled backup completed.
