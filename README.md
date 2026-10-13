@@ -97,3 +97,7 @@ No private network addresses or device identifiers are disclosed.
 ## Architecture decisions
 
 [Decision log](docs/decisions.md) records the one-line reason behind each major choice, the alternative considered, and whether it is deployed or planned.
+
+## Mealie recipe manager
+
+Mealie runs in a dedicated Debian VM on Proxmox with Docker Compose. Household LAN and Tailscale remote access are verified. Daily VM and application backups are configured; a manual application archive and off-host SSH/rsync transfer to the Pi 5 NVMe have been verified. The sequential nightly job and disaster-recovery restore still need end-to-end testing. See [Mealie deployment and backup runbook](docs/mealie.md).
