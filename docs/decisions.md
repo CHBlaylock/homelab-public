@@ -30,6 +30,11 @@
 | Planned | Later HDD NAS as an additional backup tier | Creates another physical copy beyond the primary Pi storage and SSD NAS, rather than relying on ZFS redundancy. |
 | Planned | Jellyfin processing on Proxmox, media stored on NAS | Places compute/transcoding on the server while leaving the NAS optimized for storage. |
 
+| Deployed | Dedicated Mealie Debian VM on Proxmox | Isolates household recipe management from Pi cloud workloads instead of colocating everything on the Pi. |
+| Deployed | Mealie remote access through Tailscale | Enables household access over cellular without exposing the application through router port forwarding. |
+| Deployed | Application-consistent Mealie archive with off-host Pi copy | Stops SQLite-backed app before archiving and stores a second copy on separate hardware instead of relying only on same-host VM backups. |
+| Configured; full test pending | Sequential nightly Mealie backup then SSH/rsync transfer | Avoids a fixed-delay transfer racing an unfinished backup; full scheduled workflow and restore still need verification. |
+
 ## Documentation rule
 
 For future meaningful choices, record the **decision**, its **one-sentence reason versus an alternative**, and the **implementation status**. Prefer measurable constraints: cost, capacity, reliability, compatibility, network speed, power, privacy, or independence. Update the status only after an order, installation, or test is confirmed.
