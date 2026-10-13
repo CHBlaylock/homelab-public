@@ -13,7 +13,7 @@ A dedicated Debian VM on a Proxmox VE hypervisor runs Mealie in Docker Compose. 
 | VM image | Daily Proxmox snapshot backup with ZSTD compression; retain three | Configured; manual backup verified |
 | Application data | Shell script stops Mealie, archives Compose configuration and persistent data, then restarts service; retain seven local archives | Manual backup and archive contents verified |
 | Off-host | rsync over SSH with a dedicated Ed25519 key to a separate Raspberry Pi 5 NVMe drive | Manual transfer and passwordless SSH verified |
-| Nightly orchestration | Cron starts application backup at 3 AM server local time, then invokes off-host transfer only after backup command succeeds | Configured; complete end-to-end test pending |
+| Nightly orchestration | Cron starts application backup at 3 AM server local time, then invokes off-host transfer only after backup command succeeds | Configured; manual end-to-end run passed; scheduled cron execution and restore test pending |
 | Disaster recovery | Restore archive into a clean disposable VM and validate recipes/accounts | Not yet tested |
 
 The two backup destinations provide different hardware failure domains, but neither substitutes for a tested restore or a later dedicated backup NAS. Remote archives currently accumulate; separate retention management is future work.
@@ -29,4 +29,8 @@ The two backup destinations provide different hardware failure domains, but neit
 
 ## Next verification
 
-Run the complete nightly workflow once, verify matching local and off-host archives, inspect logs and container health, then test a restore in an isolated environment. Future improvement: migrate off-host storage to the planned dedicated TrueNAS appliance and apply independent retention/integrity checks.
+Manual nightly workflow passed on October 13, 2026: matching named 65 KB archive on VM and Pi, older archive retained, and container reported healthy. Next: verify first scheduled cron run, archive integrity and restore in an isolated environment. Future improvement: migrate off-host storage to the planned dedicated TrueNAS appliance and apply independent retention/integrity checks.
+
+## October 13, 2026 manual end-to-end test
+
+Executed the nightly orchestration script manually. Confirmed matching new archive `mealie-2026-10-13_02-36-29.tar.gz` (65 KB displayed) in both local and Pi backup directories; prior `02-12-18` archive remained on both. Docker reported the Mealie container `Up (healthy)` after restart. **This verifies the manual workflow, not yet the cron-triggered run, checksum equality, archive extraction, or a full restore.**
