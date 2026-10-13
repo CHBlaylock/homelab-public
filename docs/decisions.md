@@ -33,10 +33,19 @@
 | Deployed | Dedicated Mealie Debian VM on Proxmox | Isolates household recipe management from Pi cloud workloads instead of colocating everything on the Pi. |
 | Deployed | Mealie remote access through Tailscale | Enables household access over cellular without exposing the application through router port forwarding. |
 | Deployed | Application-consistent Mealie archive with off-host Pi copy | Stops SQLite-backed app before archiving and stores a second copy on separate hardware instead of relying only on same-host VM backups. |
-| Configured; full test pending | Sequential nightly Mealie backup then SSH/rsync transfer | Avoids a fixed-delay transfer racing an unfinished backup; full scheduled workflow and restore still need verification. |
+| Deployed; scheduled run verified | Sequential nightly Mealie backup then SSH/rsync transfer | Avoids a fixed-delay transfer racing an unfinished backup; 3 AM cron execution and off-host transfer verified. |
 
 ## Documentation rule
 
 For future meaningful choices, record the **decision**, its **one-sentence reason versus an alternative**, and the **implementation status**. Prefer measurable constraints: cost, capacity, reliability, compatibility, network speed, power, privacy, or independence. Update the status only after an order, installation, or test is confirmed.
 
 See [NAS storage design](nas-storage.md) for the selected NAS hardware, uncertainties, and verification steps.
+
+## October 13, 2026 — monitoring and recovery decisions
+
+| Status | Decision | One-line rationale and alternative |
+| --- | --- | --- |
+| Deployed | Uptime Kuma in its own unprivileged Proxmox LXC | Keeps monitoring separate from the Mealie VM with less overhead than a dedicated full VM. |
+| Deployed | Tailscale-only remote monitoring dashboard | Enables remote checks without router port forwarding or a public-facing dashboard. |
+| Deployed; notification path tested | Push monitoring of the completed backup workflow and Gmail SMTP alerts | Reports after backup plus off-host transfer and sends immediate failure alerts instead of relying solely on manual log checks; a simulated alert succeeded, not a deliberately failed backup. |
+| Verified for VM image; application archive pending | Isolated Proxmox VM restore test | Validated VM boot, healthy service and SQLite integrity without risking the live VM; independent Pi archive restoration remains to be tested. |
