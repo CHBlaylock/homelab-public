@@ -52,3 +52,15 @@ Dedicated unprivileged Debian LXC with native Node.js and Uptime Kuma under syst
 Mealie HTTP availability monitor checks the application once per minute. The nightly backup Push monitor expects a report within 93,600 seconds (26 hours). The orchestration script reports UP via curl only after the application backup and Pi rsync both succeed. Its Bash ERR trap attempts to report DOWN if the orchestration fails. The Push URL is stored in a root-readable-only config file separate from the script; no token or credential is committed.
 
 A standalone simulated DOWN push changed the monitor status and triggered a successful Gmail SMTP email notification to an iPhone; a subsequent UP push restored the monitor. Bash syntax validation passed. **Not yet verified:** an intentionally failed real backup/transfer triggering the ERR trap, the next scheduled run sending its own push, actual aged-file deletion, and full restore of an application archive. The manual UP push is a connectivity test, not evidence that a scheduled backup completed.
+
+## October 13, 2026 — ingredient parsing troubleshooting
+
+**Symptom:** Bulk URL recipe imports succeeded and preserved recipe text, but very few ingredients automatically matched a food or measurement unit; manual parsing was required for nearly every ingredient.
+
+**Diagnosis:** In Mealie's administration UI, **Manage Data → Foods** contained only a manually created Butter entry, and **Manage Data → Units** was empty. The empty reference datasets—not missing recipe content—were the likely cause of poor matching.
+
+**Resolution:** Used the built-in **Seed** action and selected English for each dataset. The Foods dataset gained approximately **580 entries** and Units gained **24 entries**. No direct SQLite changes, container changes, or redeployment were necessary.
+
+**Validation:** Reparsed ingredients in an existing imported recipe. **Most foods and units were then matched automatically**; only a few required manual verification. Existing imported recipes may need individual reparsing; seeding does not establish that all previously imported records were reprocessed automatically. This greatly reduces manual work for subsequent bulk URL imports.
+
+**Operational takeaway:** Before bulk-importing a large recipe collection, verify that Mealie's Foods and Units reference datasets are populated. Review imported recipes for accurate quantities, food mappings, and units even when the importer reports success.
