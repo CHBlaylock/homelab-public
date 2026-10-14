@@ -103,3 +103,7 @@ The default legacy API endpoint returned the HTML frontend rather than statistic
 Added a dedicated **Personal Cloud** section with links to the self-hosted photo library (Immich), cloud storage (Nextcloud), and Tailscale device administration. The links render correctly in the dashboard. These are navigation links rather than health checks; uptime monitoring is configured separately in Uptime Kuma.
 
 The default Developer, Social, and Entertainment bookmark groups were removed to keep the dashboard focused on homelab services. Homepage is enabled for automatic startup, and its local environment file is protected with root ownership and mode `600`. The dashboard has working Pi-hole, Proxmox, Uptime Kuma, and Mealie widgets. Private LAN addresses are intentionally omitted from this public document.
+
+## Monitoring verification — October 2026
+
+The Homelab Status page now includes nine Uptime Kuma monitors: Homepage, Pi-hole, Proxmox, Mealie, nightly backup, Immich LAN, Nextcloud LAN, Immich Tailscale, and Nextcloud Tailscale. Homepage displayed 9 up, 0 down, and 100% uptime. An existing SMTP notification was applied to all monitors. Private addresses and credentials are omitted.
