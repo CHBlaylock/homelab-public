@@ -29,7 +29,7 @@ An initial Homepage authentication failure (HTTP 401 from the Pi-hole API) was t
 
 ## Next steps
 
-Planned, not yet completed: Mealie dashboard integration; network reservation/startup checks; and runtime memory review.
+ network reservation/startup checks; and runtime memory review.
 
 ## Proxmox read-only widget — verified October 2026
 
@@ -74,3 +74,26 @@ Sanitized widget configuration:
 ```
 
 After restarting Homepage, the widget displayed **2 sites up, 0 sites down, 83% historical uptime**, while Pi-hole and Proxmox continued functioning. Status pages are unauthenticated to reachable clients; monitor names and descriptions should be selected accordingly.
+
+## Mealie widget — verified October 2026
+
+Mealie's Homepage widget is working using a dedicated API token stored in the local protected environment file, outside version control. The public documentation intentionally omits the real address and token.
+
+Sanitized widget configuration:
+
+```yaml
+- Applications:
+    - Mealie:
+        icon: mealie.svg
+        href: http://MEALIE_LAN_IP:MEALIE_PORT
+        description: Recipe management and meal planning
+        widget:
+          type: mealie
+          url: http://MEALIE_LAN_IP:MEALIE_PORT
+          key: "{{HOMEPAGE_VAR_MEALIE_API_TOKEN}}"
+          version: 2
+```
+
+### Compatibility note
+
+The default legacy API endpoint returned the HTML frontend rather than statistics, producing an invalid-data error. Testing confirmed that the newer household statistics endpoint returned JSON when authenticated. Setting `version: 2` selected the compatible endpoint and fixed the widget. The live widget was verified displaying recipe, user, category, and tag counts. No token or private network address is published.
