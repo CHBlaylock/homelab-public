@@ -29,4 +29,28 @@ An initial Homepage authentication failure (HTTP 401 from the Pi-hole API) was t
 
 ## Next steps
 
-Planned, not yet completed: Proxmox, Uptime Kuma, and Mealie dashboard integrations; network reservation/startup checks; and runtime memory review.
+Planned, not yet completed: Uptime Kuma and Mealie dashboard integrations; network reservation/startup checks; and runtime memory review.
+
+## Proxmox read-only widget — verified October 2026
+
+Added a **Virtualization → Proxmox** Homepage widget. It successfully displays live VM and LXC counts and host CPU/memory utilization, alongside the existing Pi-hole widget.
+
+Authentication uses a dedicated Proxmox VE account assigned the propagated `PVEAuditor` role, plus a **privilege-separated API token** with its own propagated `PVEAuditor` permissions. The API token ID and secret are supplied through Homepage environment variables in the local protected environment file; no token secrets are published.
+
+Sanitized configuration:
+
+```yaml
+- Virtualization:
+    - Proxmox:
+        icon: proxmox.svg
+        href: https://PROXMOX_LAN_IP:8006
+        description: Proxmox VE virtualization host
+        widget:
+          type: proxmox
+          url: https://PROXMOX_LAN_IP:8006
+          username: "{{HOMEPAGE_VAR_PROXMOX_TOKEN_ID}}"
+          password: "{{HOMEPAGE_VAR_PROXMOX_TOKEN_SECRET}}"
+          node: PROXMOX_NODE_NAME
+```
+
+A read-only API connectivity test returned HTTP 200, and the widget was visually verified after restarting Homepage. The connectivity test temporarily bypassed TLS certificate validation for the host's self-signed certificate; certificate trust should be hardened separately.
