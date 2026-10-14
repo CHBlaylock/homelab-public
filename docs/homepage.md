@@ -29,7 +29,7 @@ An initial Homepage authentication failure (HTTP 401 from the Pi-hole API) was t
 
 ## Next steps
 
-Planned, not yet completed: Uptime Kuma and Mealie dashboard integrations; network reservation/startup checks; and runtime memory review.
+Planned, not yet completed: Mealie dashboard integration; network reservation/startup checks; and runtime memory review.
 
 ## Proxmox read-only widget — verified October 2026
 
@@ -54,3 +54,23 @@ Sanitized configuration:
 ```
 
 A read-only API connectivity test returned HTTP 200, and the widget was visually verified after restarting Homepage. The connectivity test temporarily bypassed TLS certificate validation for the host's self-signed certificate; certificate trust should be hardened separately.
+
+## Uptime Kuma monitoring widget — verified October 2026
+
+Created a **Homelab Status** page in Uptime Kuma with the existing application and nightly-backup monitors. Verified that the status page was accessible without signing in over the private network, then added it to Homepage. No port forwarding or public internet access was enabled.
+
+Sanitized widget configuration:
+
+```yaml
+- Monitoring:
+    - Uptime Kuma:
+        icon: uptime-kuma.svg
+        href: http://UPTIME_KUMA_LAN_IP:3001
+        description: Homelab service monitoring
+        widget:
+          type: uptimekuma
+          url: http://UPTIME_KUMA_LAN_IP:3001
+          slug: homelab
+```
+
+After restarting Homepage, the widget displayed **2 sites up, 0 sites down, 83% historical uptime**, while Pi-hole and Proxmox continued functioning. Status pages are unauthenticated to reachable clients; monitor names and descriptions should be selected accordingly.
