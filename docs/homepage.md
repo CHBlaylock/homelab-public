@@ -111,3 +111,7 @@ The Homelab Status page now includes nine Uptime Kuma monitors: Homepage, Pi-hol
 ### Alert delivery verification
 
 The Uptime Kuma SMTP notification successfully delivered a test email. The existing notification was verified enabled for the Proxmox monitor after applying it across the monitors. No email addresses or credentials are published.
+
+### DNS monitoring milestone
+
+Added a DNS monitor for Pi-hole to Uptime Kuma. It queries a public test domain using the private DNS resolver every 60 seconds. The monitor was confirmed Up and included on the status page. Homepage then showed 10 sites up and 0 down. The DNS check complements the existing web-interface monitor. No private IP addresses are published.
