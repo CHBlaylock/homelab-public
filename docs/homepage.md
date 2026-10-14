@@ -107,3 +107,7 @@ The default Developer, Social, and Entertainment bookmark groups were removed to
 ## Monitoring verification — October 2026
 
 The Homelab Status page now includes nine Uptime Kuma monitors: Homepage, Pi-hole, Proxmox, Mealie, nightly backup, Immich LAN, Nextcloud LAN, Immich Tailscale, and Nextcloud Tailscale. Homepage displayed 9 up, 0 down, and 100% uptime. An existing SMTP notification was applied to all monitors. Private addresses and credentials are omitted.
+
+### Alert delivery verification
+
+The Uptime Kuma SMTP notification successfully delivered a test email. The existing notification was verified enabled for the Proxmox monitor after applying it across the monitors. No email addresses or credentials are published.
