@@ -115,3 +115,7 @@ The Uptime Kuma SMTP notification successfully delivered a test email. The exist
 ### DNS monitoring milestone
 
 Added a DNS monitor for Pi-hole to Uptime Kuma. It queries a public test domain using the private DNS resolver every 60 seconds. The monitor was confirmed Up and included on the status page. Homepage then showed 10 sites up and 0 down. The DNS check complements the existing web-interface monitor. No private IP addresses are published.
+
+## Independent monitoring watchdog — verified October 2026
+
+A separate Raspberry Pi runs a lightweight Bash watchdog for the Uptime Kuma web service, so monitoring outages can trigger notifications independently of Uptime Kuma. It uses curl with connection/overall timeouts and accepts HTTP 200 or 302 as healthy. Three consecutive failures trigger a single Gmail outage email; recovery sends a separate email and resets the alert state. The watchdog runs once per minute through root cron. Email delivery uses msmtp with a protected root-owned configuration file (mode 0600); the script is root-owned with mode 0700. Healthy checks, a simulated unreachable endpoint, outage email, and recovery email were all verified, as was the cron entry. Private network addresses, recipient details, and SMTP credentials are deliberately excluded.
