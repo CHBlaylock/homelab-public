@@ -97,3 +97,9 @@ Sanitized widget configuration:
 ### Compatibility note
 
 The default legacy API endpoint returned the HTML frontend rather than statistics, producing an invalid-data error. Testing confirmed that the newer household statistics endpoint returned JSON when authenticated. Setting `version: 2` selected the compatible endpoint and fixed the widget. The live widget was verified displaying recipe, user, category, and tag counts. No token or private network address is published.
+
+## Personal Cloud links — verified October 2026
+
+Added a dedicated **Personal Cloud** section with links to the self-hosted photo library (Immich), cloud storage (Nextcloud), and Tailscale device administration. The links render correctly in the dashboard. These are navigation links rather than health checks; uptime monitoring is configured separately in Uptime Kuma.
+
+The default Developer, Social, and Entertainment bookmark groups were removed to keep the dashboard focused on homelab services. Homepage is enabled for automatic startup, and its local environment file is protected with root ownership and mode `600`. The dashboard has working Pi-hole, Proxmox, Uptime Kuma, and Mealie widgets. Private LAN addresses are intentionally omitted from this public document.
