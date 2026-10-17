@@ -40,3 +40,7 @@ tailscale set --accept-routes=false
 No router port forwarding was needed. Tailnet ACLs/grants and host authentication remain important controls. Tailscale does not replace Proxmox authentication, and its presence on the hypervisor does not automatically expose or route isolated guest networks.
 
 Actual addresses, hostnames, tailnet identities, device identifiers, and authentication material are intentionally omitted.
+
+## Media server guest (verified 2026-10-17)
+
+A separate Ubuntu media-server VM joined the existing tailnet. Using an iPhone on cellular data, remote web access was confirmed for Jellyfin, Audiobookshelf, Navidrome, and Calibre-Web Automated. Jellyfin video playback also succeeded. No router port forwarding was needed. This inbound remote-access path is separate from the dedicated outbound VPN used for torrent traffic. Exact addresses and SSH usernames are retained only in the private repository.
