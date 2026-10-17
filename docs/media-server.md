@@ -1,44 +1,42 @@
 # Media server deployment (VM 104)
 
-Status: **VM provisioned; application containers not yet deployed**, verified 2026-10-16.
+Status: **Core media stack deployed and remote access verified**, updated 2026-10-17.
 
-## Objective
+## Objective and current state
+Dedicated Ubuntu 24.04 LTS Proxmox VM hosting six Docker Compose services: Jellyfin, Audiobookshelf, Calibre-Web Automated, Navidrome, Gluetun and qBittorrent. Docker starts on boot and all services use `unless-stopped` restart policies. A full reboot recovery test is still pending.
 
-Provide household movies, television, music, books and audiobooks through self-hosted services. Use existing Tailscale infrastructure for remote access and a **separate** VPN with a fail-closed network path for torrent traffic. Do not start torrent downloads until that isolation is verified.
+| Service | Role | Current verification |
+| --- | --- | --- |
+| Jellyfin | Movies and television | Libraries configured; local and remote video playback verified |
+| Audiobookshelf | Audiobooks and podcasts | Libraries configured; remote interface verified |
+| Navidrome | Music | Music mount configured; remote interface verified |
+| Calibre-Web Automated | Ebooks | Ebook library configured; remote interface verified |
+| Gluetun | Dedicated WireGuard VPN gateway | Healthy, VPN egress and fail-closed behavior tested |
+| qBittorrent | Download client | Running through Gluetun's network namespace |
 
-## Verified VM state
+Remote application access is via Tailscale on the media VM, verified using a phone on cellular data. No router port forwarding is required. Remote web access was verified for all four media apps, but only Jellyfin video playback was tested.
 
-- Proxmox guest: VM 104, Ubuntu-based `media-server` (OS release/version not independently checked in this handoff).
-- Docker Engine 29.9.1 and Docker Compose v5.6.0 installed.
-- `docker ps -a` returned **no containers** at the time of inspection.
-- 64 GiB virtual disk, LVM-backed root filesystem; approximately 50 GiB available.
-- LAN connectivity confirmed; exact addresses omitted.
-- No separate media disk/mount appeared in the supplied `lsblk` and `df -h` output. Existing library directories currently reside on the VM filesystem unless later storage is mounted.
+## Storage layout
+```text
+/opt/media-stack/compose.yaml
+/opt/media-stack/config/             # persistent application state
+/srv/media/downloads/{incomplete,complete}
+/srv/media/quarantine
+/srv/media/validation/{pending,approved}
+/srv/media/library/{movies,tv,music,audiobooks,podcasts,ebooks}
+```
+Library mounts are read-only for playback apps where appropriate. The library currently resides on the VM's ext4 root filesystem, which has limited space; a separate NAS is planned for permanent media storage. Preserve container paths when migrating storage and prevent silent writes to the VM root disk if a NAS mount fails.
 
-## Prepared filesystem
+## Video intake
+`validate-media` performs a ClamAV scan and video-stream check, then stages files for `approve-media`. Approved files can be imported using `import-movie` or `import-tv`; the latter organizes files by show and season. The movie path passed an end-to-end synthetic media test, including Jellyfin playback. The new TV importer has passed syntax and permissions checks but has not yet had a full end-to-end test. Temporary copies consume disk space.
 
-- `/opt/media-stack/config/`: dedicated configuration directories for Jellyfin, Jellyseerr, qBittorrent, Sonarr, Radarr, Prowlarr, Lidarr, Audiobookshelf, and Calibre-Web Automated.
-- `/srv/media/library/`: movies, tv, music, audiobooks, ebooks, podcasts.
-- `/srv/media/downloads/`: incomplete and complete.
-- `/srv/media/quarantine/` and `/srv/media/validation/`: previously prepared holding/inspection directories; no custom validation pipeline is required to deploy Jellyfin.
+## Network and security decisions
+- Tailscale handles private remote application access; it is distinct from the outbound torrent VPN.
+- qBittorrent shares Gluetun's network namespace and is bound to the tunnel interface. The VPN firewall and host isolation rules were tested; firewall rules persist through systemd.
+- No WireGuard private keys, internal IP addresses, host usernames, passwords, or tokens are included in public documentation.
+- Standard access controls, scanning, and format validation provide baseline risk reduction; they do not guarantee downloaded content is safe.
 
-The directories have differentiated service-account ownership and setgid/group permissions. Preserve these boundaries when configuring container UID/GID and bind mounts; verify numeric IDs and ACLs before deployment. Directory existence **does not** imply an application is installed.
+## Limitations and next steps
+The guest currently has only a virtual VGA adapter; Jellyfin uses software transcoding. Intel GPU passthrough for hardware transcoding can be revisited later. A full reboot recovery test, TV import test, optional media automation services, and NAS migration remain pending.
 
-## Planned deployment sequence
-
-1. Confirm dedicated service-account UID/GID and required directory access.
-2. Create/review Jellyfin Compose service and mount media libraries read-only where practical; verify local web UI.
-3. Plan separate capacity for media rather than filling the 64 GiB VM disk.
-4. Configure Tailscale remote access without exposing public ports.
-5. Configure torrent VPN and verify fail-closed behavior, then qBittorrent.
-6. Add Sonarr, Radarr, Prowlarr and optional companion applications; connect automation after isolation works.
-
-## Design decisions
-
-- **Dedicated VM:** keeps media workloads separate from other household services.
-- **Dedicated service accounts:** limits cross-service write access.
-- **Separate configuration and library paths:** simplifies backup, replacement, and storage expansion.
-- **Tailscale plus distinct torrent VPN:** remote administration and outbound download privacy have different requirements.
-- **Practical media safety:** standard isolation, permissions and cautious handling of untrusted downloads instead of maintaining a bespoke EPUB security research project.
-
-This is a sanitized progress record, not a ready-to-run Compose file. No credentials, internal IPs, account names or private keys are included.
+**Decision rationale:** Dedicated VM simplifies isolation and recovery; separate service identities and library mounts reduce cross-service write access; private Tailscale remote access avoids public port exposure; separate outbound VPN isolates torrent traffic; stable container paths simplify NAS migration.
