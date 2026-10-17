@@ -1,5 +1,13 @@
 # EPUB sandbox validation checkpoint (2026-10-16)
 
+## Why this sandbox exists
+
+The EPUB sandbox is being developed to inspect untrusted ebook files **before** they are admitted to a self-hosted library. EPUBs are ZIP-based containers with metadata and XML, so a file that looks like an ordinary book may contain malformed archive structures, unsafe paths, decompression bombs, or malicious parser inputs. The goal is to create a controlled inspection boundary that can reject suspicious content without granting it access to library services or other homelab workloads.
+
+The design intentionally separates inspection from import. The scanner receives constrained file descriptors, runs with reduced privileges and systemd isolation, and does not approve, download, transfer, or import files. This limits the consequences of processing untrusted input and provides a testable path toward a future quarantine-and-approval workflow. Passing current regression tests does **not** mean the system is ready to trust arbitrary files.
+
+**Decision rationale:** inspect before import, keep the scanner isolated from the library, and retain disabled production actions until adversarial testing and explicit integration review are complete.
+
 ## Scope
 Documentation-only checkpoint for an isolated, non-production EPUB inspection sandbox. This records operator-reported test output; it is not an independent audit of the host or source code.
 
