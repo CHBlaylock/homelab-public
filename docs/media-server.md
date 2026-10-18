@@ -1,48 +1,31 @@
 # Media server deployment (VM 104)
 
-Status: **Core media stack deployed; torrent automation enabled and awaiting scheduled-run validation**, updated 2026-10-17.
+**Status:** Core media services deployed; library automation and verification ongoing (October 2026).
 
-## Objective and current state
+## Architecture
+A dedicated Ubuntu Proxmox VM hosts a Docker Compose media environment. Docker restart policies support service recovery; a complete reboot recovery test remains pending.
 
-Dedicated Ubuntu 24.04 LTS Proxmox VM hosting Jellyfin, Audiobookshelf, Calibre-Web Automated, Navidrome, Gluetun and qBittorrent, with Sonarr and Radarr integrated into the download workflow. Docker starts on boot and deployed Compose services use unless-stopped restart policies. A full reboot recovery test is still pending.
-
-| Service | Role | Current verification |
+| Service | Purpose | Verification |
 | --- | --- | --- |
-| Jellyfin | Movies and television | Libraries configured; local and remote playback verified; Reacher S02E07 appeared after correcting file ACLs and rescanning |
-| Audiobookshelf | Audiobooks and podcasts | Libraries configured; remote interface verified |
-| Navidrome | Music | Music mount configured; remote interface verified |
-| Calibre-Web Automated | Ebooks | Ebook library configured; remote interface verified |
-| Gluetun | Dedicated WireGuard VPN gateway | Healthy; VPN egress and fail-closed behavior tested |
-| qBittorrent | Download client | Runs in Gluetun's network namespace; approved torrent start tested |
-| Sonarr / Radarr | TV and movie management | Integrated with categorized qBittorrent downloads and import workflows |
+| Jellyfin | Video library, metadata display and streaming | Local and Tailscale remote playback verified |
+| Audiobookshelf | Audiobook and podcast library management | Remote interface verified; audio workflows pending |
+| Navidrome | Music library and streaming | Remote interface verified; music workflow pending |
+| Calibre-Web Automated | Ebook library and reading interface | Ebook imports and library display verified |
+| Sonarr / Radarr | Television and movie library organization, naming and metadata coordination | Integrated with library workflow |
+| Prowlarr | Media catalog and index metadata coordination | Service deployed |
+| Seerr | Media request interface | Service deployed |
+| Shelfmark | Ebook discovery and request interface | Service deployed |
 
-Remote application access is via Tailscale on the media VM, verified using a phone on cellular data. No router port forwarding is required. Remote web access was verified for all four media apps, and Jellyfin playback was tested.
+## Storage and file handling
+Applications use persistent configuration storage and organized movie, TV, music, audiobook, podcast and ebook libraries. Media is currently stored on the VM pending migration to a dedicated NAS. The future mount design must prevent silent writes to local storage when remote storage is unavailable.
 
-The media-torrent-automation systemd timer is enabled at a 10-minute interval. Its coordinated service runs the existing metadata inspector followed by the approved-download controller. The initial manual coordinated run succeeded; the first timer-triggered end-to-end run is still awaiting verification. The controller started 12 eligible approved torrents in a manual run. A manually stopped Reacher torrent remained stopped during the next controller run while another approved torrent started. Validate this behavior across scheduled runs before considering manual-pause protection complete.
+Automated movie and television import scripts use release-name parsing, library organization, permissions management and scheduled Linux services. An imported TV episode was initially invisible in Jellyfin until its read ACL was corrected; import scripts now apply read access after moving media. Additional unattended import verification is ongoing.
 
-The inspector state records screening results and authorization. Rejected and unverified records remain unauthorized. Automatic retries for unverified metadata and automatic alternative-release searches are not yet implemented.
+Ebook processing uses ClamAV, file-format and structural checks, and staged validation before library import. An unprivileged approval worker and systemd timer are deployed. Several ebooks have been confirmed in the reading interface; a fresh unattended end-to-end test remains pending.
 
-## Storage layout
-```text
-/opt/media-stack/compose.yaml
-/opt/media-stack/config/             # persistent application state
-/srv/media/downloads/{incomplete,complete}
-/srv/media/quarantine
-/srv/media/validation/{pending,approved}
-/srv/media/library/{movies,tv,music,audiobooks,podcasts,ebooks}
-```
-Library mounts are read-only for playback apps where appropriate. The library currently resides on the VM's ext4 root filesystem, which has limited space; a separate NAS is planned for permanent media storage. Preserve container paths when migrating storage and prevent silent writes to the VM root disk if a NAS mount fails.
+## Access and operations
+Tailscale provides private remote access without router port forwarding. The VM currently uses software transcoding; GPU acceleration and storage migration remain future projects. Application backup restoration, complete reboot recovery and some scheduled-workflow tests remain pending.
 
-## Video intake
-The existing validation flow uses ClamAV and ffprobe, stages files for approval, then imports approved media into the appropriate library. The TV importer successfully moved Reacher S02E07 into the TV library, triggered a Sonarr rescan, and the episode appeared in Jellyfin after a read ACL was added for Jellyfin's service UID. Both TV and movie importers now set Jellyfin read access after moving a file. The importer account was tested and can apply the ACL. Future real imports still need observation to verify the fix end to end. Temporary copies consume disk space.
+**Design rationale:** isolate workloads in a VM, keep library paths stable, use explicit service permissions, automate repeatable organization and metadata tasks, and verify workflows before declaring them production-complete.
 
-## Network and security decisions
-- Tailscale handles private remote application access; it is distinct from the outbound torrent VPN.
-- qBittorrent shares Gluetun's network namespace and is bound to the tunnel interface. The VPN firewall and host isolation rules were tested; firewall rules persist through systemd.
-- No WireGuard private keys, internal IP addresses, host usernames, passwords, or tokens are included in public documentation.
-- Standard access controls, scanning, and format validation provide baseline risk reduction; they do not guarantee downloaded content is safe.
-
-## Limitations and next steps
-The guest currently has only a virtual VGA adapter; Jellyfin uses software transcoding. Intel GPU passthrough for hardware transcoding can be revisited later. Full reboot recovery and NAS migration remain pending. The 10-minute torrent timer is enabled, but its next timer-triggered run still needs validation. Unverified metadata retry and alternative-release search remain planned. Confirm manual-stop behavior over repeated scheduled runs before treating it as fully validated.
-
-**Decision rationale:** A dedicated VM simplifies isolation and recovery; separate service identities and library mounts reduce cross-service write access; private Tailscale remote access avoids public port exposure; a separate outbound VPN isolates torrent traffic; metadata approval gates automatic starting; explicit per-torrent start tracking is intended to respect manual stops; stable container paths simplify NAS migration.
+This public documentation excludes private network addresses, credentials and sensitive operational configuration.
