@@ -55,7 +55,7 @@ See [NAS storage design](nas-storage.md) for the selected NAS hardware, uncertai
 
 | Status | Decision | One-line rationale and alternative |
 | --- | --- | --- |
-| Deployed; scheduled run pending verification | One coordinated systemd service and 10-minute timer for metadata inspection followed by approved-download starting | Keeps inspection and start decisions in one ordered workflow instead of competing independent timers. |
-| Deployed; behavior test partial | Start only metadata-approved, explicitly authorized torrents and track automation-started items | Prevents rejected/unverified items from starting and is intended to preserve a user's manual stop rather than treating every stopped torrent as new. |
-| Deployed; retry work pending | Keep unverified metadata results unauthorized | Avoids automatically starting a torrent whose contents could not be verified; bounded retries and alternative-release searches remain future work. |
+| Deployed; additional testing pending | Coordinated systemd media intake and validation tasks | Keeps scheduled validation and organization predictable instead of relying on manual file handling. |
+| Deployed; validation ongoing | Apply file validation before media library import | Prevents unverified files from being incorporated into the library without checks. |
+| Deployed; retry work pending | Keep files with inconclusive validation out of managed libraries | Maintains conservative handling of uncertain files while bounded retries are developed. |
 | Deployed | Grant Jellyfin read ACL after TV/movie import moves | Files retain their source permissions when renamed into the library; setting read access after the move avoids recurring invisible media caused by permission denial. |
