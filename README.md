@@ -113,3 +113,14 @@ Uptime Kuma runs in a dedicated unprivileged Debian 13 Proxmox LXC container (CT
 A dedicated Ubuntu-based Proxmox VM runs Jellyfin, Audiobookshelf, Calibre-Web Automated and Navidrome, alongside Sonarr and Radarr for TV/movie library management and metadata coordination. Tailscale provides private remote access. Jellyfin local and remote playback are verified. An imported TV episode became visible after correcting its read ACL; both TV and movie importers now apply Jellyfin read access after moving files.
 
 Media intake automation includes format checks, library organization and metadata updates. Scheduled validation and retry behavior still require further end-to-end testing. See [media server progress](docs/media-server.md) and [October media implementation update](docs/media-server-oct-2026.md).
+
+## November 2026 — media server and observability update
+
+- Upgraded the deployed Jellyfin server to **12.4** after a verified application-data backup; confirmed database migration, library access and playback.
+- Integrated Jellyfin's newer API with a self-hosted **Homepage** dashboard to show movie, series and episode totals plus active playback streams.
+- Added **What's Up Docker (WUD)** to monitor container-image updates with administrator authentication and **no automatic update actions**.
+- Continued monitoring through Uptime Kuma and Glances; Homepage brings service shortcuts and operational information together.
+- The media stack includes Jellyfin, Sonarr, Radarr, Prowlarr, Seerr, Audiobookshelf, Navidrome, Calibre-Web Automated and supporting containers. A separate VPN egress path is maintained for the download client; remote administration uses Tailscale.
+- Rotated the dashboard's Jellyfin API credential after an integration troubleshooting session. No credentials, private addresses, or private access details are included here.
+
+This update documents verified deployments and troubleshooting, not a claim that every available container update has been installed.
