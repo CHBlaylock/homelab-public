@@ -124,3 +124,7 @@ Media intake automation includes format checks, library organization and metadat
 - Rotated the dashboard's Jellyfin API credential after an integration troubleshooting session. No credentials, private addresses, or private access details are included here.
 
 This update documents verified deployments and troubleshooting, not a claim that every available container update has been installed.
+
+## November 2, 2026 — WUD monitoring widget
+
+Integrated Homepage's **native What's Up Docker widget** with the existing WUD deployment. The widget now displays **16 monitored containers and 8 available updates** (snapshot from November 2, 2026), while the WUD dashboard provides per-container version details. Resolved an authentication error by loading a protected environment variable into the Homepage service. Credentials are not stored in public dashboard configuration. Container updates remain manual; no automatic updates were enabled.
